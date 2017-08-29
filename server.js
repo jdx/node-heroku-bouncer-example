@@ -19,6 +19,13 @@ app.get('/', (req, res) => {
   res.render('home.ejs')
 })
 
+app.get('/auth/logout', (req, res, next) => {
+  req.session.destroy(err => {
+    if (err) return next(err)
+    res.send('logged out')
+  })
+})
+
 app.use(bouncer())
 
 app.get('/dashboard', (req, res, next) => {
@@ -27,13 +34,6 @@ app.get('/dashboard', (req, res, next) => {
 
   res.render('dashboard.ejs', {
     email: req.session.herokuAccount.email
-  })
-})
-
-app.get('/auth/logout', (req, res, next) => {
-  req.session.destroy(err => {
-    if (err) return next(err)
-    res.redirect('/')
   })
 })
 
