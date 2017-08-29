@@ -14,12 +14,27 @@ app.use(session({
   cookie: { secure: production }
 }))
 
-app.use(bouncer())
-
 // render a page with a login button
 app.get('/', (req, res) => {
-  console.dir(req.session)
   res.render('home.ejs')
+})
+
+app.use(bouncer())
+
+app.get('/dashboard', (req, res, next) => {
+  // get user info here
+  console.dir(req.session.herokuAccount)
+
+  res.render('dashboard.ejs', {
+    email: req.session.herokuAccount.email
+  })
+})
+
+app.get('/auth/logout', (req, res, next) => {
+  req.session.destroy(err => {
+    if (err) return next(err)
+    res.redirect('/')
+  })
 })
 
 let port = process.env.PORT || 3000
